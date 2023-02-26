@@ -29,7 +29,7 @@ Use the Below Steps to install the requirements
 
 ## Commands Usage
 
-<instances> - List all the instances running
+<instances> - List all the instances running with optional instances names as filter
 
 ```python
 python service_monitoring.py instances
@@ -46,6 +46,23 @@ python service_monitoring.py instances
 |   6 | 10.58.1.77  | UserService        | 74%   | 36%      | healthy  |
 |   7 | 10.58.1.30  | IdService          | 30%   | 96%      | healthy  |
 |   8 | 10.58.1.68  | GeoService         | 75%   | 28%      | healthy  |
+
+```
+
+```python
+python service_monitoring.py instances IdService TimeService
+
+|     | IP          | Service     | CPU   | Memory   | Status   |
+|----:|:------------|:------------|:------|:---------|:---------|
+|  10 | 10.58.1.85  | TimeService | 87%   | 71%      | healthy  |
+|  12 | 10.58.1.86  | IdService   | 82%   | 18%      | healthy  |
+|  14 | 10.58.1.40  | IdService   | 14%   | 3%       | healthy  |
+|  24 | 10.58.1.38  | TimeService | 81%   | 90%      | healthy  |
+|  25 | 10.58.1.117 | IdService   | 34%   | 95%      | healthy  |
+|  29 | 10.58.1.14  | IdService   | 94%   | 13%      | healthy  |
+|  42 | 10.58.1.133 | IdService   | 12%   | 7%       | healthy  |
+|  45 | 10.58.1.58  | TimeService | 23%   | 11%      | healthy  |
+|  49 | 10.58.1.96  | IdService   | 72%   | 22%      | healthy  |
 
 ```
 
@@ -106,3 +123,21 @@ unhealthy - Return services with status unhealthy
 python service_monitoring.py unhealthy
 
 No Unhealthy Services. All services have more than 2 instances up and running
+
+	
+## Assumption
+
+The following are the assumptions made while building the CLI Tool
+
+	1. Health Status - If there are less than 2 instances running for a service, the status is unhealthy		
+	2. Max Traffic the cox server can handle - Currently we are hitting the APIs every 5 seconds to refresh the monitoring status (the time interval can be configured in the config file)
+	3. Based on assumption 2 where cpx server can handle multiple requests or load, we are not persisting the data in any persistent data store or cache
+
+	
+## Improvements
+
+The following improvements can be made to the CLI Tool in the future based on the additional requirements that may pop up
+
+	1. Persiting the cpx server endpoints data in a cache and refreshing the cache every 5 seconds.		
+	2. New Services added or exisitng services if went down can be found by comparing the historic data from cache. This can be used for Alerting if any services are down
+	3. GUI - Instead of CLI montioring, a dashboard can be built for better user experience.
