@@ -88,8 +88,10 @@ Press CTRL + C for Keyboard interrupt
         try:
             while True:
                 os.system('cls' if os.name == 'nt' else 'clear')
-                data = self._get_data()
-                df = pd.DataFrame(data, columns=data_headers)
+                server_data = self._get_data()
+                df = pd.DataFrame(server_data, columns=data_headers)
+                if data:
+                    df=df[df['Service'].isin(data)]
                 sys.stdout.write(df.to_markdown())
                 time.sleep(refresh_count_in_seconds)
         except KeyboardInterrupt:
